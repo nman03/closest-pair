@@ -1,6 +1,5 @@
 package closestPair;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
 public class ClosestPairAlgorithm {
@@ -36,7 +35,7 @@ public class ClosestPairAlgorithm {
 		
 		if (c == 'x') {
 			while (i <= m && j <= r) {
-				if (arr[i].getX() <= arr[j].getX()) {
+				if (arr[i].x <= arr[j].x) {
 					tmp[k] = arr[i++];
 				}
 
@@ -47,7 +46,7 @@ public class ClosestPairAlgorithm {
 			}
 		} else if (c == 'y') {
 			while (i <= m && j <= r) {
-				if (arr[i].getY() <= arr[j].getY()) {
+				if (arr[i].y <= arr[j].y) {
 					tmp[k] = arr[i++];
 				}
 
@@ -81,7 +80,14 @@ public class ClosestPairAlgorithm {
 		int m = Px.length;
 
 		if (m == 2) {
-			return new Pair(Px[0], Px[1]);
+			
+			Pair p1 = new Pair(Px[0], Px[1]);
+			Pair p2 = new Pair(Py[0], Py[1]);
+			
+			if (p1.distance < p2.distance) 
+				return p1;
+			else
+				return p2;
 		}
 		
 		else {
@@ -99,22 +105,23 @@ public class ClosestPairAlgorithm {
 			
 			Pair pair1 = ClosestPair(Qx, Qy);
 			Pair pair2 = ClosestPair(Rx, Ry);
-			double delta = Math.min(pair1.d, pair2.d);
+			double delta = Math.min(pair1.distance, pair2.distance);
 			Pair pair3 = ClosestSplitPair(Px, Py, delta);
 			
 			if (pair3 != null) {
-				if (pair1.d <= pair2.d && pair1.d <= pair3.d) {
+				if (pair1.distance <= pair2.distance && pair1.distance <= pair3.distance) {
 					return pair1;
-				} else if (pair2.d <= pair1.d && pair2.d <= pair3.d) {
+				} else if (pair2.distance <= pair1.distance && pair2.distance <= pair3.distance) {
 					return pair2;
 				} else {
 					return pair3;
 				}
 			} else {
-				if (pair1.d <= pair2.d) {
+				if (pair1.distance <= pair2.distance) {
 					return pair1;
+					
 				} else {
-					return pair2;
+					return pair2;	
 				}
 			}	
 		}
@@ -123,22 +130,22 @@ public class ClosestPairAlgorithm {
 	
 	public Pair ClosestSplitPair(Point[] Px, Point[] Py, double delta) {
 		
-		int x = (int) Px[Px.length / 2].getX();
+		int x = (int) Px[Px.length / 2].x;
 		
 		ArrayList<Point> Sy = new ArrayList<>();
 		for (int i = 0 ; i < Py.length ; i++) {
-			if (Py[i].getX() > x - delta && Py[i].getX() < x + delta)
+			if (Py[i].x >= x - delta && Py[i].x <= x + delta)
 				Sy.add(Py[i]);
 		}
 		
 		double best = delta;
 		Pair bestPair = null;
 		
-		for (int i = 0 ; i < Sy.size() - 6 ; i++) {
-			for (int j = 0 ; j < 7 ; j++) {
+		for (int i = 0 ; i < Sy.size() ; i++) {
+			for (int j = i + 1 ; j < Sy.size() ; j++) {
 				Pair p = new Pair(Sy.get(i), Sy.get(j));
-				if (p.d < best) {
-					best = p.d;
+				if (p.distance < best) {
+					best = p.distance;
 					bestPair = p;
 				}
 			}
@@ -146,20 +153,42 @@ public class ClosestPairAlgorithm {
 		
 		return bestPair;
 	}
+	
+	class Point {
+		double x;
+		double y;
+		
+		public Point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+		
+		public String toString() {
+			return String.format("(%.2f, %.2f)", x, y); 
+		}
+	}
 
 	class Pair {
-		Point p; 
-		Point q;
-		double d;
+		Point point1; 
+		Point point2;
+		double distance = 0;
 		
 		public Pair() {
 			
 		}
 		
 		public Pair(Point p, Point q) {
-			this.p = p;
-			this.q = q;
-			this.d = p.distance(q);
+			point1 = p;
+			point2 = q;
+			distance = getDistance(p, q);
+		}
+		
+		public double getDistance(Point p1, Point p2) {
+			return Math.sqrt((Math.pow(p2.x - p1.x, 2)) + (Math.pow(p2.y - p1.y, 2)));
+		}
+		
+		public String toString() {
+			return String.format("%s - %s: %.2f ", point1.toString(), point2.toString(), distance);
 		}
 	}
 }
