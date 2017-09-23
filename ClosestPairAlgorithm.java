@@ -6,22 +6,7 @@ import objects.Point;
 import pointSort.PointMergeSort;
 
 public class ClosestPairAlgorithm {
-	
-	public Pair bruteForce(Point[] array) {
-		Pair best = new Pair(array[0], array[1]);
-
-		for (int i = 0 ; i < array.length ; i++) {
-			for (int j = i + 1 ; j < array.length ; j++) {
-				Pair tmp = new Pair(array[i], array[j]);
-				if (tmp.getDistance() < best.getDistance()) {
-					best = tmp;
-				}
-			}
-		}
 		
-		return best;
-	}
-	
 	public Pair closestPair(Point[] array) {
 		PointMergeSort sort = new PointMergeSort();
 		
@@ -34,10 +19,10 @@ public class ClosestPairAlgorithm {
 	public Pair closestPair(Point[] pX, Point[] pY) {
 		int m = pX.length;
 
-		if (m <= 3) {
+		if (m == 2) {
 
-			Pair p1 = bruteForce(pX);
-			Pair p2 = bruteForce(pY);
+			Pair p1 = new Pair(pX[0], pX[1]);
+			Pair p2 = new Pair(pY[0], pY[1]);
 
 			if (p1.getDistance() < p2.getDistance()) 
 				return p1;
